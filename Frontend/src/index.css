@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gray-50 font-sans antialiased;
+    }
+}
+
+@layer components {
+    .main-content {
+        @apply pt-20 min-h-screen;
+    }
+}
+
+/* ============ CUSTOM SCROLLBAR ============ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4CAF50;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #45a049;
+}
+
+/* ============ PARALLAX SECTION ============ */
+.parallax-section {
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ============ PARALLAX OVERLAY ============ */
+.parallax-overlay {
+    background: rgba(0, 0, 0, 0.75);
+    min-height: 100vh;
+    padding: 80px 0;
+    display: flex;
+    align-items: center;
+}
+
+/* ============ PARALLAX CONTENT CARDS ============ */
+.parallax-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s ease;
+}
+
+.parallax-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ============ RESPONSIVE PARALLAX ============ */
+@media (max-width: 768px) {
+    .parallax-section {
+        min-height: 100vh;
+        background-attachment: scroll;
+    }
+    
+    .parallax-overlay {
+        min-height: 100vh;
+        padding: 60px 0;
+    }
+    
+    .parallax-card {
+        padding: 24px;
+    }
+}
+
+/* ============ STATS ANIMATION ============ */
+.stats-number {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .stats-number {
+        font-size: 2.5rem;
+    }
+}
+
+/* ============ SMOOTH SCROLLING ============ */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ============ TOAST CUSTOMIZATION ============ */
+.Toastify__toast {
+    border-radius: 12px !important;
+    font-family: inherit !important;
+}
+
+.Toastify__toast--success {
+    background: #10B981 !important;
+    color: white !important;
+}
+
+.Toastify__toast--error {
+    background: #EF4444 !important;
+    color: white !important;
+}
+
+.Toastify__toast--warning {
+    background: #F59E0B !important;
+    color: white !important;
+}
+
+.Toastify__toast--info {
+    background: #3B82F6 !important;
+    color: white !important;
+}
+
+/* ============ DROPDOWN ANIMATION ============ */
+.dropdown-menu {
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============ BUTTON STYLES ============ */
+.btn-primary {
+    @apply bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-300;
+}
+
+.btn-secondary {
+    @apply bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition duration-300;
+}
+
+.btn-danger {
+    @apply bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition duration-300;
+}
+
+/* ============ CARD STYLES ============ */
+.card {
+    @apply bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300;
+}
+
+/* ============ INPUT FOCUS ============ */
+input:focus, textarea:focus, select:focus {
+    @apply outline-none ring-2 ring-green-500 border-transparent;
+}

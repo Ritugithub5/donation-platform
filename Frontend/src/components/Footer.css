@@ -1,0 +1,238 @@
+/* ============ FOOTER ============ */
+.footer {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 50px 0 0;
+    margin-top: 40px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Footer Top */
+.footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Brand Section */
+.footer-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50;
+    margin-bottom: 12px;
+}
+
+.footer-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #a0a0b0;
+    max-width: 300px;
+    margin-bottom: 16px;
+}
+
+.footer-social {
+    display: flex;
+    gap: 12px;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #a0a0b0;
+    text-align: center;
+}
+
+.social-link:hover {
+    background: #4CAF50;
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Links Section */
+.footer-heading {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    color: #a0a0b0;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+    color: #4CAF50;
+    padding-left: 4px;
+}
+
+/* ============ CONTACT SECTION - CLICKABLE LINKS ============ */
+.footer-contact p {
+    font-size: 14px;
+    color: #a0a0b0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ✅ Clickable Contact Links */
+.footer-contact-link {
+    color: #a0a0b0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* Hover effect for contact links */
+.footer-contact-link:hover {
+    color: #4CAF50;
+    transform: translateX(4px);
+    background: rgba(76, 175, 80, 0.08);
+}
+
+/* Active/Click effect */
+.footer-contact-link:active {
+    transform: scale(0.95);
+}
+
+/* Email link - specific style */
+.footer-contact-link[href^="mailto:"]:hover {
+    color: #60A5FA;
+    background: rgba(96, 165, 250, 0.08);
+}
+
+/* Phone link - specific style */
+.footer-contact-link[href^="tel:"]:hover {
+    color: #34D399;
+    background: rgba(52, 211, 153, 0.08);
+}
+
+/* Address link - specific style */
+.footer-contact-link[href^="https://www.google.com/maps"]:hover {
+    color: #FBBF24;
+    background: rgba(251, 191, 36, 0.08);
+}
+
+/* Mobile touch feedback */
+@media (max-width: 768px) {
+    .footer-contact-link {
+        padding: 6px 4px;
+        display: inline-block;
+        min-height: 44px; /* Better touch target */
+    }
+    
+    .footer-contact-link:active {
+        background: rgba(76, 175, 80, 0.15);
+        transform: scale(0.96);
+    }
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer-bottom p {
+    font-size: 13px;
+    color: #808090;
+}
+
+.footer-tagline {
+    font-style: italic;
+    color: #4CAF50 !important;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 992px) {
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 30px 0 0;
+    }
+    
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding-bottom: 25px;
+    }
+    
+    .footer-description {
+        max-width: 100%;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 0;
+    }
+
+    .footer-contact p {
+        font-size: 15px; /* Slightly larger on mobile */
+        padding: 2px 0;
+    }
+}
+
+/* ============ ANIMATION ============ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer-contact-link {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.footer-contact p:nth-child(1) .footer-contact-link {
+    animation-delay: 0.1s;
+}
+.footer-contact p:nth-child(2) .footer-contact-link {
+    animation-delay: 0.2s;
+}
+.footer-contact p:nth-child(3) .footer-contact-link {
+    animation-delay: 0.3s;
+}
