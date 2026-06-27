@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaArrowLeft, FaSpinner, FaBox } from 'react-icons/fa';
-import api, { publicApi } from '../services/api'; // ✅ Import both
+import { FaArrowLeft, FaSpinner, FaBox, FaUser, FaMapMarkerAlt, FaCalendarAlt, FaHeart } from 'react-icons/fa';
+import api, { publicApi } from '../services/api';
 
 const CategoryPage = () => {
     const { categoryName } = useParams();
@@ -18,11 +18,10 @@ const CategoryPage = () => {
         try {
             setLoading(true);
             
-            // ✅ Fetch ALL donations from public API
+            // ✅ Fetch ALL donations
             const response = await publicApi.get('/donations');
-            console.log('📦 All donations response:', response.data);
+            console.log('📦 All donations:', response.data);
             
-            // Handle different response formats
             let allDonations = [];
             if (response.data && response.data.donations) {
                 allDonations = response.data.donations;
@@ -34,10 +33,7 @@ const CategoryPage = () => {
                 allDonations = [];
             }
             
-            console.log('📦 All donations:', allDonations);
-            console.log('🔍 Looking for category:', categoryName);
-            
-            // ✅ Filter donations by category (case-insensitive)
+            // ✅ Filter by category
             const filteredItems = allDonations.filter(donation => {
                 if (!donation.items || donation.items.length === 0) return false;
                 return donation.items.some(item => 
@@ -48,28 +44,22 @@ const CategoryPage = () => {
             console.log(`✅ Found ${filteredItems.length} items in category: ${categoryName}`);
             setItems(filteredItems);
             
-            // ✅ Fetch category info
+            // ✅ Get category info
             try {
                 const catResponse = await publicApi.get('/categories');
-                console.log('📋 Categories response:', catResponse.data);
-                
                 let categories = [];
                 if (catResponse.data && catResponse.data.categories) {
                     categories = catResponse.data.categories;
                 } else if (Array.isArray(catResponse.data)) {
                     categories = catResponse.data;
-                } else {
-                    categories = [];
                 }
                 
                 const foundCategory = categories.find(
                     c => c.name?.toLowerCase() === categoryName?.toLowerCase()
                 );
                 setCategory(foundCategory);
-                console.log('✅ Found category:', foundCategory);
-                
             } catch (err) {
-                console.log('Category info not found:', err);
+                console.log('Category info not found');
             }
             
         } catch (error) {
@@ -89,6 +79,17 @@ const CategoryPage = () => {
             cancelled: 'bg-red-100 text-red-800',
         };
         return colors[status] || 'bg-gray-100 text-gray-800';
+    };
+
+    const getStatusIcon = (status) => {
+        const icons = {
+            pending: '⏳',
+            accepted: '✅',
+            collected: '📦',
+            distributed: '🎯',
+            cancelled: '❌',
+        };
+        return icons[status] || '📋';
     };
 
     const getEmojiForCategory = (categoryName) => {
@@ -146,7 +147,7 @@ const CategoryPage = () => {
                 </div>
             </div>
 
-            {/* Items Grid */}
+            {/* Items Grid with Full Details */}
             {items.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                     <FaBox className="text-6xl text-gray-300 mx-auto mb-4" />
@@ -160,49 +161,109 @@ const CategoryPage = () => {
                     >
                         Start Donating
                     </Link>
-                    <br />
-                    <Link to="/" className="text-purple-600 hover:underline mt-3 inline-block">
-                        Browse other categories
-                    </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {items.map((donation) => (
-                        <div key={donation._id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-100">
-                            <div className="flex justify-between items-start">
-                                <span className={`px-3 py-1 rounded-full text-sm ${getStatusBadge(donation.status)}`}>
-                                    {donation.status}
+                        <div key={donation._id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+                            {/* Status Header */}
+                            <div className="px-6 py-3 bg-gradient-to-r from-purple-50 to-purple-100 border-b border-gray-100 flex justify-between items-center">
+                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(donation.status)}`}>
+                                    {getStatusIcon(donation.status)} {donation.status.charAt(0).toUpperCase() + donation.status.slice(1)}
                                 </span>
                                 <span className="text-sm text-gray-400">
-                                    {new Date(donation.createdAt).toLocaleDateString()}
+                                    #{donation._id?.slice(-6)}
                                 </span>
                             </div>
-                            
-                            <div className="mt-4">
-                                <h3 className="font-bold text-gray-800">
-                                    {donation.items?.map(i => `${i.quantity}x ${i.type}`).join(', ')}
-                                </h3>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    {donation.items?.length} item(s)
-                                </p>
-                                {donation.items?.[0]?.category && (
-                                    <span className="inline-block mt-2 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded-full">
-                                        {getEmojiForCategory(donation.items[0].category)} {donation.items[0].category}
-                                    </span>
-                                )}
-                            </div>
-                            
-                            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                                <div>
-                                    <p className="text-sm text-gray-500">Donor</p>
-                                    <p className="font-medium text-gray-700">{donation.donorId?.name || 'Unknown'}</p>
+
+                            <div className="p-6">
+                                {/* Items */}
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-semibold text-gray-500 mb-2">📦 Items Donated</h4>
+                                    <div className="space-y-2">
+                                        {donation.items?.map((item, idx) => (
+                                            <div key={idx} className="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
+                                                <div>
+                                                    <span className="font-medium">{item.quantity}x {item.type}</span>
+                                                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${getStatusBadge(item.category)}`}>
+                                                        {item.category}
+                                                    </span>
+                                                </div>
+                                                <span className="text-xs text-gray-500">Condition: {item.condition}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <Link
-                                    to={`/donation/${donation._id}`}
-                                    className="text-purple-600 hover:text-purple-700 font-medium text-sm"
-                                >
-                                    View Details →
-                                </Link>
+
+                                {/* Donor Info */}
+                                <div className="mb-3 border-t border-gray-100 pt-3">
+                                    <div className="flex items-center gap-2 text-sm">
+                                        <FaUser className="text-purple-500" />
+                                        <span className="font-medium">Donor:</span>
+                                        <span className="text-gray-600">{donation.donorId?.name || 'Unknown'}</span>
+                                        <span className="text-gray-400 text-xs">({donation.donorId?.email || 'No email'})</span>
+                                    </div>
+                                </div>
+
+                                {/* NGO Info */}
+                                {donation.ngoId && (
+                                    <div className="mb-3 flex items-center gap-2 text-sm">
+                                        <FaHeart className="text-red-500" />
+                                        <span className="font-medium">NGO:</span>
+                                        <span className="text-gray-600">{donation.ngoId?.name || 'Not assigned'}</span>
+                                    </div>
+                                )}
+
+                                {/* Address */}
+                                {donation.collectionAddress && (
+                                    <div className="mb-3 flex items-start gap-2 text-sm">
+                                        <FaMapMarkerAlt className="text-purple-500 mt-0.5" />
+                                        <div>
+                                            <span className="font-medium">Address:</span>
+                                            <span className="text-gray-600">
+                                                {donation.collectionAddress?.street}, {donation.collectionAddress?.city}, {donation.collectionAddress?.state}
+                                            </span>
+                                            <span className="text-gray-400 text-xs block">
+                                                Pincode: {donation.collectionAddress?.pincode}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Schedule */}
+                                {donation.scheduledDate && (
+                                    <div className="mb-3 flex items-center gap-2 text-sm">
+                                        <FaCalendarAlt className="text-purple-500" />
+                                        <span className="font-medium">Scheduled:</span>
+                                        <span className="text-gray-600">
+                                            {new Date(donation.scheduledDate).toLocaleDateString()} at {donation.scheduledTime || '12:00'}
+                                        </span>
+                                    </div>
+                                )}
+
+                                {/* Special Instructions */}
+                                {donation.specialInstructions && (
+                                    <div className="mb-3 text-sm bg-yellow-50 p-2 rounded-lg border border-yellow-100">
+                                        <span className="font-medium">📝 Instructions:</span>
+                                        <span className="text-gray-600 ml-1">{donation.specialInstructions}</span>
+                                    </div>
+                                )}
+
+                                {/* Donor Message */}
+                                {donation.donorMessage && (
+                                    <div className="mb-3 text-sm bg-blue-50 p-2 rounded-lg border border-blue-100">
+                                        <span className="font-medium">💬 Message:</span>
+                                        <span className="text-gray-600 ml-1">"{donation.donorMessage}"</span>
+                                    </div>
+                                )}
+
+                                {/* Dates */}
+                                <div className="text-xs text-gray-400 border-t border-gray-100 pt-3 mt-2">
+                                    Created: {new Date(donation.createdAt).toLocaleString()}
+                                    {donation.completedAt && (
+                                        <span className="ml-4">Completed: {new Date(donation.completedAt).toLocaleString()}</span>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
