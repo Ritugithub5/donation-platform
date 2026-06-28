@@ -474,13 +474,16 @@ app.get('/api/ratings/ngo/:ngoId', async (req, res) => {
     }
 });
 
-// GET ALL RATINGS (Admin)
+// ============ GET ALL RATINGS (Admin) ============
 app.get('/api/admin/ratings', async (req, res) => {
     try {
         const ratings = await Rating.find()
             .populate('donorId', 'name email')
             .populate('ngoId', 'name email organizationName')
+            .populate('donationId', 'status items')
             .sort({ createdAt: -1 });
+        
+        console.log(`✅ Found ${ratings.length} ratings in admin`);
         
         res.json({
             success: true,
@@ -488,15 +491,16 @@ app.get('/api/admin/ratings', async (req, res) => {
             ratings: ratings
         });
     } catch (error) {
-        console.error('Get ratings error:', error);
+        console.error('Get admin ratings error:', error);
         res.status(500).json({ 
             success: false, 
-            message: 'Failed to fetch ratings' 
+            message: 'Failed to fetch ratings',
+            ratings: []
         });
     }
 });
 
-// DELETE RATING (Admin)
+// ============ DELETE RATING (Admin) ============
 app.delete('/api/admin/ratings/:id', async (req, res) => {
     try {
         const rating = await Rating.findByIdAndDelete(req.params.id);
@@ -525,6 +529,31 @@ app.delete('/api/admin/ratings/:id', async (req, res) => {
         res.status(500).json({ 
             success: false, 
             message: 'Failed to delete rating' 
+        });
+    }
+});
+
+// ============ TEST RATINGS ENDPOINT ============
+app.get('/api/test-ratings', async (req, res) => {
+    try {
+        const ratings = await Rating.find()
+            .populate('donorId', 'name email')
+            .populate('ngoId', 'name email organizationName')
+            .populate('donationId', 'status');
+        
+        console.log(`🧪 Test ratings: Found ${ratings.length} ratings`);
+        
+        res.json({
+            success: true,
+            count: ratings.length,
+            ratings: ratings
+        });
+    } catch (error) {
+        console.error('Test ratings error:', error);
+        res.json({ 
+            success: false, 
+            error: error.message,
+            ratings: []
         });
     }
 });
@@ -1749,7 +1778,6 @@ app.delete('/api/admin/donation/:donationId', async (req, res) => {
             });
         }
         
-        // Also delete ratings for this donation
         await Rating.deleteMany({ donationId: req.params.donationId });
         
         res.json({ 
@@ -1875,7 +1903,7 @@ app.delete('/api/admin/complaints/:id', async (req, res) => {
 });
 
 // ============ START SERVER ============
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
     console.log(`📍 Test: http://localhost:${PORT}/api/test`);
@@ -1890,4 +1918,5 @@ app.listen(PORT, () => {
     console.log(`📍 Employee Engagement (Admin): GET http://localhost:${PORT}/api/admin/employee-engagements`);
     console.log(`📍 Ratings: POST http://localhost:${PORT}/api/ratings`);
     console.log(`📍 Ratings (Admin): GET http://localhost:${PORT}/api/admin/ratings`);
+    console.log(`📍 Test Ratings: GET http://localhost:${PORT}/api/test-ratings`);
 });
