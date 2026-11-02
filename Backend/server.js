@@ -1906,7 +1906,7 @@ app.delete('/api/admin/complaints/:id', async (req, res) => {
 // ============ SERVE FRONTEND (MUST BE AFTER API ROUTES) ============
 
 // Serve static files from React build folder
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '../Frontend/build')));
 
 // Catch-all route to serve React index.html for client-side routing
 app.get('*', (req, res) => {
@@ -1917,7 +1917,7 @@ app.get('*', (req, res) => {
             message: 'API route not found' 
         });
     }
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '../Frontend/build', 'index.html'));
 });
 
 // ============ START SERVER ============
