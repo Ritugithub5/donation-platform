@@ -1,5 +1,5 @@
 {
-  "name": "donation-platform",
+  "name": "donation-platform-root",
   "version": "1.0.0",
   "scripts": {
     "start": "node Backend/server.js",
