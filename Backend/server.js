@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path'); // Added for serving frontend
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // ============ MongoDB Connection ============
-mongoose.connect('mongodb://localhost:27017/donation_platform')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/donation_platform')
 .then(() => console.log('✅ MongoDB Connected'))
 .catch(err => console.log('❌ MongoDB Error:', err));
 
@@ -1900,6 +1901,23 @@ app.delete('/api/admin/complaints/:id', async (req, res) => {
             message: 'Failed to delete complaint' 
         });
     }
+});
+
+// ============ SERVE FRONTEND (MUST BE AFTER API ROUTES) ============
+
+// Serve static files from React build folder
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Catch-all route to serve React index.html for client-side routing
+app.get('*', (req, res) => {
+    // Don't let this catch API routes
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ 
+            success: false, 
+            message: 'API route not found' 
+        });
+    }
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // ============ START SERVER ============

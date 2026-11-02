@@ -29,7 +29,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000",
   "devDependencies": {
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
